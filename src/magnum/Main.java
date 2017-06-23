@@ -28,7 +28,7 @@ public class Main {
 			}
 		});
 	}
-		
+	
 	public static void watch(List<String> locations, Consumer<File> handler) throws Exception {
 		for (String location : locations) {
 			new File(location).watch((file, operation) -> {
