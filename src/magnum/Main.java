@@ -11,6 +11,8 @@ import javax.lang.Strings;
 import javax.util.List;
 import javax.util.Timestamp;
 
+import magnum.io.FileWatcher;
+
 public class Main {
 	
 	public static void main(String[] arguments) throws Exception {
@@ -30,11 +32,9 @@ public class Main {
 	}
 	
 	public static void watch(List<String> locations, Consumer<File> handler) throws Exception {
-		for (String location : locations) {
-			new File(location).watch((file, operation) -> {
-				println("Noticed " + file + " changed [" + Timestamp.format(now()) + "]...");
-				handler.accept(file);
-			});
-		}
+		new FileWatcher(locations.array()).watch(file -> {
+			println("Noticed " + file + " changed [" + Timestamp.format(now()) + "]...");
+			handler.accept(file);
+		});
 	}
 }
