@@ -1,6 +1,5 @@
 package magnum;
 
-import static javax.lang.Process.*;
 import static javax.lang.System.*;
 import static javax.util.List.*;
 import static javax.util.Map.*;
@@ -10,6 +9,7 @@ import java.util.function.Consumer;
 import javax.io.File;
 import javax.util.List;
 import javax.util.Timestamp;
+import javax.lang.Process;
 
 import magnum.core.CommandRunner;
 import magnum.core.FileWatcher;
@@ -25,8 +25,7 @@ public class Main extends cilantro.Main {
 
 		this.watcher = watch(list("src", "resources"), file -> {
 			try {
-				println("Running " + parameters.join(" ") + "...");
-				process(builder(parameters.array()).redirectErrorStream(true)).future().onOutput((line, future) -> {
+				run(parameters).future().onOutput((line, future) -> {
 					println("  [" + parameters.get(0, "none") + "]: " + line);
 				}).onTerminate((code, future) -> println("Execution complete [" + Timestamp.format(now()) + "]."));
 			} catch (Throwable t) {
@@ -45,7 +44,7 @@ public class Main extends cilantro.Main {
 	}
 	
 	public Process run(List<String> parameters) throws Exception {
-		return new CommandRunner().run(map("parameters", parameters.toString()));
+		return new CommandRunner().run(map(entry("parameters", parameters.join(" "))));
 	}
 	
 	public void shutdown() throws Exception {
@@ -53,6 +52,6 @@ public class Main extends cilantro.Main {
 	}
 	
 	public static void main(String[] arguments) throws Exception {
-		launch(Main.class, arguments);
+		main(Main.class, arguments);
 	}
 }
