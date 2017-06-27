@@ -4,10 +4,12 @@
 Magnum is a streaming build tool that can watch a set of source files and execute a command on any change.  It is super lightweight and fast to install and run.  Use it to continously run your maven, ant, shell script based builds, or really any other command!
 
 ### Install
-1.  Download the magnum-<version>.tar.gz file and extract on to your system
+ -  Download the magnum-<version>.tar.gz file and extract on to your system
+<br>
 
 ### Run
-2.  From your project home directory run [location]/bin/magnum.sh [command]
+ -  From your project home directory run [location]/bin/magnum.sh [command]
+<br>
 
 ### Examples
 #### Maven
