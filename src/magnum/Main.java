@@ -3,6 +3,7 @@ package magnum;
 import static javax.lang.Process.*;
 import static javax.lang.System.*;
 import static javax.util.List.*;
+import static javax.util.Map.*;
 
 import java.util.function.Consumer;
 
@@ -10,7 +11,8 @@ import javax.io.File;
 import javax.util.List;
 import javax.util.Timestamp;
 
-import magnum.io.FileWatcher;
+import magnum.core.CommandRunner;
+import magnum.core.FileWatcher;
 
 public class Main extends cilantro.Main {
 	
@@ -40,6 +42,10 @@ public class Main extends cilantro.Main {
 			println("Noticed " + file + " changed [" + Timestamp.format(now()) + "]...");
 			handler.accept(file);
 		});
+	}
+	
+	public Process run(List<String> parameters) throws Exception {
+		return new CommandRunner().run(map("parameters", parameters.toString()));
 	}
 	
 	public void shutdown() throws Exception {

@@ -1,4 +1,4 @@
-package magnum.io;
+package magnum.core;
 
 import static javax.lang.Try.*;
 import static javax.util.List.*;
