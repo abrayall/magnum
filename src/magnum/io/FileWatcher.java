@@ -1,16 +1,19 @@
 package magnum.io;
 
+import static javax.lang.Try.*;
+import static javax.util.List.*;
+
 import java.util.function.Consumer;
 
 import javax.io.File;
 import javax.util.List;
-import static javax.util.List.*;
 
 import magnum.Watcher;
 
 public class FileWatcher implements Watcher<File> {
-
+	
 	protected List<File> files;
+	protected List<File.FileWatcher> watchers;
 	
 	public FileWatcher(String... files) {
 		this(list(files).map(File::new));
@@ -25,10 +28,15 @@ public class FileWatcher implements Watcher<File> {
 	}
 	
 	public FileWatcher watch(Consumer<File> callback) throws Exception {
-		for (File file : this.files)
-			file.watch((target, operation) -> callback.accept(target));
-		
+		this.watchers = this.files.map(file -> {
+			return attempt(() -> file.watcher((target, operation) -> callback.accept(target)).watch());
+		}).each(watcher -> attempt(() -> watcher.join()));
+
 		return this;
 	}
-
+	
+	public FileWatcher stop() throws Exception {
+		this.watchers.each(watcher -> attempt(() -> watcher.halt()));
+		return this;
+	}
 }

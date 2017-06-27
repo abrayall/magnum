@@ -1,40 +1,52 @@
 package magnum;
 
-import static javax.lang.System.*;
 import static javax.lang.Process.*;
+import static javax.lang.System.*;
 import static javax.util.List.*;
 
 import java.util.function.Consumer;
 
 import javax.io.File;
-import javax.lang.Strings;
 import javax.util.List;
 import javax.util.Timestamp;
 
 import magnum.io.FileWatcher;
 
-public class Main {
+public class Main extends cilantro.Main {
 	
-	public static void main(String[] arguments) throws Exception {
+	protected Watcher<?> watcher;
+	
+	public Integer execute() throws Exception {
 		println("Magnum v1.0.0");
 		println("--------------");
 		println("Watching files...");
-		watch(list("src", "resources"), file -> {
+
+		this.watcher = watch(list("src", "resources"), file -> {
 			try {
-				println("Running " + Strings.join(arguments, " ") + "...");
-				process(builder(arguments).redirectErrorStream(true)).future().onOutput((line, future) -> {
-					println("  [" + list(arguments).get(0, "none") + "]: " + line);
+				println("Running " + parameters.join(" ") + "...");
+				process(builder(parameters.array()).redirectErrorStream(true)).future().onOutput((line, future) -> {
+					println("  [" + parameters.get(0, "none") + "]: " + line);
 				}).onTerminate((code, future) -> println("Execution complete [" + Timestamp.format(now()) + "]."));
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
 		});
+		
+		return 1;
 	}
 	
-	public static void watch(List<String> locations, Consumer<File> handler) throws Exception {
-		new FileWatcher(locations.array()).watch(file -> {
+	public Watcher<?> watch(List<String> locations, Consumer<File> handler) throws Exception {
+		return new FileWatcher(locations.array()).watch(file -> {
 			println("Noticed " + file + " changed [" + Timestamp.format(now()) + "]...");
 			handler.accept(file);
 		});
+	}
+	
+	public void shutdown() throws Exception {
+		this.watcher.stop();
+	}
+	
+	public static void main(String[] arguments) throws Exception {
+		launch(Main.class, arguments);
 	}
 }
