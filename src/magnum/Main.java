@@ -19,10 +19,10 @@ public class Main extends cilantro.Main {
 	protected Watcher<?> watcher;
 	
 	public Integer execute() throws Exception {
-		println("Magnum v1.0.0");
+		println("${format(Magnum v1.0.0, blue, bold)}");
 		println("--------------");
 		println("Watching files...");
-
+		
 		this.watcher = watch(list("src", "resources"), file -> {
 			try {
 				run(parameters).future().onOutput((line, future) -> {
