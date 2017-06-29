@@ -20,14 +20,13 @@ public class Main extends cilantro.Main {
 	
 	public Integer execute() throws Exception {
 		println("${format(Magnum v1.0.0, blue, bold)}");
-		println("--------------");
 		println("Watching files...");
 		
 		this.watcher = watch(list("src", "resources"), file -> {
 			try {
 				run(parameters).future().onOutput((line, future) -> {
-					println("  [" + parameters.get(0, "none") + "]: " + line);
-				}).onTerminate((code, future) -> println("Execution complete [" + Timestamp.format(now()) + "]."));
+					println("  ${yellow([" + parameters.get(0, "none") + "]:)} " + line);
+				}).onTerminate((code, future) -> println("\n${format(Execution complete [" + Timestamp.format(now()) + "]., green, bold)}"));
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
