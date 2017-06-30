@@ -21,7 +21,7 @@ public class Main extends cilantro.Main {
 	
 	public Integer execute(List<String> parameters, Map<String, String> options) throws Exception {
 		println("-----------------------------");
-		println("${format(Magnum - CI Build Tool, blue, bold)} ${format(v1.0.1, yellow)}");
+		println("${format(Magnum - CI Build Tool, blue, bold)} ${format(v" + Version.getVersion() + ", yellow)}");
 		println("-----------------------------");
 		
 		if (parameters.size() == 0)
