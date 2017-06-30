@@ -7,9 +7,10 @@ import static javax.util.Map.*;
 import java.util.function.Consumer;
 
 import javax.io.File;
-import javax.util.List;
-import javax.util.Timestamp;
 import javax.lang.Process;
+import javax.util.List;
+import javax.util.Map;
+import javax.util.Timestamp;
 
 import magnum.core.CommandRunner;
 import magnum.core.FileWatcher;
@@ -18,10 +19,19 @@ public class Main extends cilantro.Main {
 	
 	protected Watcher<?> watcher;
 	
-	public Integer execute() throws Exception {
-		println("${format(Magnum v1.0.0, blue, bold)}");
-		println("Watching files...");
+	public Integer execute(List<String> parameters, Map<String, String> options) throws Exception {
+		println("-----------------------------");
+		println("${format(Magnum - CI Build Tool, blue, bold)} ${format(v1.0.1, yellow)}");
+		println("-----------------------------");
 		
+		if (parameters.size() == 0)
+			return help();
+					
+		return watch(parameters, options);
+	}
+	
+	public Integer watch(List<String> parameters, Map<String, String> options) throws Exception {
+		println("Watching files...");
 		this.watcher = watch(list("src", "resources"), file -> {
 			try {
 				run(parameters).future().onOutput((line, future) -> {
@@ -48,6 +58,14 @@ public class Main extends cilantro.Main {
 	
 	public void shutdown() throws Exception {
 		this.watcher.stop();
+	}
+	
+	protected Integer help() {
+		println();
+		println("Usage: magnum [command]");
+		println("  - command:  command and parameters that should be executed when file changes");
+		println();
+		return 0;
 	}
 	
 	public static void main(String[] arguments) throws Exception {
