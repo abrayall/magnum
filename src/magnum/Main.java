@@ -47,7 +47,7 @@ public class Main extends cilantro.Main {
 			}
 		});
 		
-		return 1;
+		return 0;
 	}
 	
 	public Watcher<?> watch(List<String> locations, Consumer<File> handler) throws Exception {
