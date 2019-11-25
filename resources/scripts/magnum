@@ -1,9 +1,9 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
 #
 # Shell script to launch Java app magnum
 #
-# Description: 
+# Description:
 #
 # Auto generated via Stork Launcher by Fizzed, Inc.
 #  Web: http://fizzed.co
@@ -400,33 +400,33 @@ findAllJavaExecutables()
     # search all known java home locations for java binaries
     # linux openjdk: /usr/lib/jvm
     # centos/redhat sunjdk: /usr/java
-    
+
     local java_home_parents=""
 
     # common install dir on linux
     java_home_parents=`appendPath "$java_home_parents" "/usr/lib/jvm/*"`
     java_home_parents=`appendPath "$java_home_parents" "/usr/java/*"`
-    
+
     # common install dir on freebsd
     java_home_parents=`appendPath "$java_home_parents" "/usr/local/openjdk*"`
 
     # common install dir on openbsd
     java_home_parents=`appendPath "$java_home_parents" "/usr/local/jdk*"`
     java_home_parents=`appendPath "$java_home_parents" "/usr/local/jre*"`
-    
+
     if isOperatingSystemOSX; then
         java_home_parents=`appendPath "$java_home_parents" "/Library/Internet Plug-Ins/Java*/Contents/Home"`
         #java_home_parents=`appendPath "$java_home_parents" "/System/Library/Frameworks/JavaVM.framework/Versions/*"`
         java_home_parents=`appendPath "$java_home_parents" "/Library/Java/JavaVirtualMachines/*/Contents/Home"`
         java_home_parents=`appendPath "$java_home_parents" "/System/Library/Java/JavaVirtualMachines/*/Contents/Home"`
     fi
-    
+
     logJavaSearchDebug "trying well-known java homes..."
     local IFS=":"
     for java_home_parent in $java_home_parents; do
         #echo "searching java_home_parent: $java_home_parent"
 	for maybe_java_home in $java_home_parent; do
-            [ -d "$maybe_java_home" ] || continue   
+            [ -d "$maybe_java_home" ] || continue
 
             local jre_bin="$maybe_java_home/jre/bin/java"
             local jdk_bin="$maybe_java_home/bin/java"
@@ -449,7 +449,12 @@ findAllJavaExecutables()
 # returns: "7"
 parseJavaMajorVersion()
 {
-    local full_version="$1"
+    if [[ $1 == 1.* ]];
+    then
+        local full_version="$1"
+    else
+        local full_version="1.$1"
+    fi
     local java_maj_ver=`echo "$full_version" | awk '{split($0, array, ".")} END{print array[2]}'`
     echo $java_maj_ver
 }
@@ -575,7 +580,7 @@ stopJavaApp()
     timeout=`expr $timeout - 1`
   done
   if [ ! $timeout -gt 0 ]
-  then 
+  then
       echo "Unable to kill app within timeout; may need to kill it manually [pid: $TMPPID]"
   else
       rm -f $TMPPID
